@@ -1,14 +1,18 @@
 from telethon import TelegramClient, events
 from telethon.tl.functions.messages import GetChatInviteImportersRequest, HideChatJoinRequestRequest
+from telethon.sessions import StringSession
 import asyncio
 import json
 import os
 
-# ✅ DIRECT VALUES (yahi fix hai)
+# ✅ TERA API
 api_id = 39424967
 api_hash = "05bd3d0c3625a42301025a48e82e7d19"
 
-client = TelegramClient("session", api_id, api_hash)
+# 🔥 SESSION STRING (yaha apni daal)
+SESSION = "1AZWarzkBu2r43lBZhVCIPXZ8rglNhTXifw5XYWyO4KPt4rbSkv02KsOABHKIk0NUt7FRyKEK5rTYBm8xcMksVcR4l8toPg7kTTx0DfCG-58fCCn6NhcQEFTkyjpgNtTzhU859dGvokTm8l1ocSBtIIabd-PWTiFLdSLXaT6fsicqtBVRGprLF1fne_vV19oAswKmhqWooPX_onZo_oltbPfKyAdE6MDOcRIJfz8nvN6GPFTIDXUoM7PqIlS_M9Cof9ex6j8iT6ZcDEHqNc-FxJPO6R8zmeUpLxAWZrIWxC9GenoIdhmiOAh_Hab94O0giCsrkoxU1KShV8D2AxhreYrApbcn4pQ="
+
+client = TelegramClient(StringSession(SESSION), api_id, api_hash)
 
 CONFIG_FILE = "groups.json"
 
@@ -24,7 +28,7 @@ def save_data(data):
     with open(CONFIG_FILE, "w") as f:
         json.dump(data, f)
 
-# Accept requests loop
+# 🔄 Accept requests loop
 async def accept_requests():
     while True:
         data = load_data()
@@ -41,6 +45,10 @@ async def accept_requests():
                     limit=10
                 ))
 
+                if not result.importers:
+                    print(f"❌ No pending in {group}")
+                    continue
+
                 for user in result.importers:
                     await client(HideChatJoinRequestRequest(
                         peer=group,
@@ -50,9 +58,9 @@ async def accept_requests():
                     print(f"✔ Accepted {user.user_id} in {group}")
 
             except Exception as e:
-                print(f"Error in {group}: {e}")
+                print(f"⚠️ Error in {group}: {e}")
 
-        print("⏳ Waiting 30 min...")
+        print("⏳ Waiting 30 minutes...")
         await asyncio.sleep(1800)
 
 # ================= COMMANDS =================

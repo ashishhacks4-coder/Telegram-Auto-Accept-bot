@@ -4,8 +4,9 @@ import asyncio
 import json
 import os
 
-api_id = int(os.environ.get("API_ID"))
-api_hash = os.environ.get("API_HASH")
+# ✅ DIRECT VALUES (yahi fix hai)
+api_id = 39424967
+api_hash = "05bd3d0c3625a42301025a48e82e7d19"
 
 client = TelegramClient("session", api_id, api_hash)
 
@@ -32,9 +33,7 @@ async def accept_requests():
             await asyncio.sleep(10)
             continue
 
-        groups = data["groups"]
-
-        for group in groups:
+        for group in data["groups"]:
             try:
                 result = await client(GetChatInviteImportersRequest(
                     peer=group,
@@ -42,9 +41,7 @@ async def accept_requests():
                     limit=10
                 ))
 
-                users = result.importers
-
-                for user in users:
+                for user in result.importers:
                     await client(HideChatJoinRequestRequest(
                         peer=group,
                         user_id=user.user_id,
@@ -57,7 +54,6 @@ async def accept_requests():
 
         print("⏳ Waiting 30 min...")
         await asyncio.sleep(1800)
-
 
 # ================= COMMANDS =================
 
@@ -102,14 +98,11 @@ async def remove_group(event):
 @client.on(events.NewMessage(pattern=r"\.list"))
 async def list_groups(event):
     data = load_data()
-    groups = data["groups"]
 
-    if not groups:
+    if not data["groups"]:
         await event.reply("❌ No groups added")
     else:
-        msg = "📋 Groups:\n" + "\n".join(groups)
-        await event.reply(msg)
-
+        await event.reply("📋 Groups:\n" + "\n".join(data["groups"]))
 
 # ================= MAIN =================
 

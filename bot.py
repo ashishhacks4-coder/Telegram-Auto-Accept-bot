@@ -4,8 +4,8 @@ import asyncio
 import json
 import os
 
-api_id = int(os.environ.get("39424967"))
-api_hash = os.environ.get("05bd3d0c3625a42301025a48e82e7d19")
+api_id = int(os.environ.get("API_ID"))
+api_hash = os.environ.get("API_HASH")
 
 client = TelegramClient("session", api_id, api_hash)
 
